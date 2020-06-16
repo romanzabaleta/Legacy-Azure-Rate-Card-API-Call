@@ -1,16 +1,30 @@
 import os
 import json
+import subprocess
+
+class az():
+    def tojson(input, filename):
+        output = str(subprocess.check_output(input, shell=True))
+        output = output.replace('\\r\\n','')
+        output = output.replace(' ','')
+        output = output.replace("b'[","")
+        output = output.replace("]\\x1b[0m'","")
+        output = output.replace(",",", ")
+        output = json.loads(output)
+        with open(filename+'.json', 'w') as outfile:
+            json.dump(output, outfile)
+        return output
 
 
-os.system('cmd /c "az login > AZLoginOutput.txt')
-print("Created AZLoginOutput.txt")
+loginfo = az.tojson("az login","accoutninfo")
+print("accountinfo.json created")
+
 os.system('cmd /c "az provider register --namespace Microsoft.Compute"')
 os.system('cmd /c "az provider register --namespace Microsoft.Resources"')
 os.system('cmd /c "az provider register --namespace Microsoft.ContainerService"')
 os.system('cmd /c "az provider register --namespace Microsoft.Commerce"')
 
-
-subID = input("Enter id as written in AZLoginOutput.txt: ")
+subID = loginfo["id"]
 
 data = {"Name": "MyRateCardRole", "IsCustom": "true", "Description": "Rate Card query role",
        "Actions": ["Microsoft.Compute/virtualMachines/vmSizes/read",
@@ -27,14 +41,6 @@ os.system('cmd /c "az role definition create --verbose --role-definition @myrole
 
 os.system('cmd /c "az ad sp create-for-rbac --name "MyServicePrincipal" --role "MyRateCardRole" --sdk-auth true \
 > my_credentials.json"')
-
-
-
-
-
-
-
-
 
 
 
