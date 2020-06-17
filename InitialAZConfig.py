@@ -3,7 +3,7 @@ import json
 import subprocess
 
 class az():
-    def tojson(input, filename):
+    def login(input, filename):
         output = str(subprocess.check_output(input, shell=True))
         output = output.replace('\\r\\n','')
         output = output.replace(' ','')
@@ -14,9 +14,21 @@ class az():
         with open(filename+'.json', 'w') as outfile:
             json.dump(output, outfile)
         return output
+    def cred(input, filename):
+        output = str(subprocess.check_output(input, shell=True))
+        output = output.replace("\\x1b[0m'",'')
+        output = output.replace('\\r\\n', '')
+        output = output.replace("b'", "")
+        output = output.replace(' ', '')
+        output = output.replace(",", ", ")
+        print(output)
+        output = json.loads(output)
+        with open(filename+'.json', 'w') as outfile:
+            json.dump(output, outfile)
+        return output
 
 
-loginfo = az.tojson("az login","accoutninfo")
+loginfo = az.login("az login","accountinfo")
 print("accountinfo.json created")
 
 os.system('cmd /c "az provider register --namespace Microsoft.Compute"')
@@ -39,9 +51,7 @@ with open('myrole.json', 'w') as outfile:
 
 os.system('cmd /c "az role definition create --verbose --role-definition @myrole.json"')
 
-os.system('cmd /c "az ad sp create-for-rbac --name "MyServicePrincipal" --role "MyRateCardRole" --sdk-auth true \
-> my_credentials.json"')
-
+az.cred('''az ad sp create-for-rbac --name "MyServicePrincipal" --role "MyRateCardRole" --sdk-auth true''',"my_credentials")
 
 
 
