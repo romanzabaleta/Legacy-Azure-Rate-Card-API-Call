@@ -48,6 +48,6 @@ btoken = az.usejson(command)["access_token"]
 
 subid = adata["id"]
 
-apicall = '''curl -L "https://management.azure.com/subscriptions/''' + subid +'''/providers/Microsoft.Commerce/RateCard?api-version=2016-08-31-preview&%24filter=OfferDurableId+eq+'MS-AZR-0003P'+and+Currency+eq+'USD'+and+Locale+eq+'en-US'+and+RegionInfo+eq+'US'" -H "Authorization: Bearer '''+btoken
+apicall = '''curl -L "https://management.azure.com/subscriptions/''' + subid +'''/providers/Microsoft.Compute/skus?api-version=2019-04-01" -H "Authorization: Bearer '''+btoken
 
-az.savejson(apicall,"RateCardOutput")
+az.savejson(apicall,"SKUOutput")
