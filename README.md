@@ -1,5 +1,5 @@
 # Azure-Rate-Card-API-Call
-This program configures your Azure account to run rate card API calls and then runs the API call.
+This program configures your Azure account to run rate card API calls. The program then runs a rate card API call and saves it as a JSON file.
 
 # Dependecies
 The following dependecies are critical to running the program and cost free.
