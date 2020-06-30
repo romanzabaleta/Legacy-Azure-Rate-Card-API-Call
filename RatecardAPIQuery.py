@@ -1,53 +1,24 @@
-import os
-import json
-import subprocess
+from jsoncommands import jsoncmd
 
-class az():
-    def usejson(input):
-        output = str(subprocess.check_output(input, stderr=subprocess.STDOUT, shell=True))
-        output = output[output.find("{"):]
-        output = output[:output.rfind("}") + 1]
-        output = output.replace("\\r\\n", "")
-        output = output.replace(" ", "")
-        output = output.replace(",", ", ")
-        output = json.loads(output)
-        return output
+def main():
+    cdata = jsoncmd.loadjson('my_credentials.json')
+    adata = jsoncmd.loadjson('accountinfo.json')
+    clientId = cdata['clientId']
+    clientSecret = cdata['clientSecret']
+    tenantId = adata['tenantId']
+    command = "curl https://login.microsoftonline.com/" + tenantId + "/oauth2/token \
+    -F grant_type=client_credentials \
+    -F resource=https://management.core.windows.net/ \
+    -F client_id=" + clientId + "\
+    -F client_secret=" + clientSecret
+    btoken = jsoncmd.tojson(command)
+    apicall = '''curl -L "https://management.azure.com/subscriptions/''' + adata["id"] + '''/providers/Microsoft.Commerce/RateCard?api-version=2016-08-31-preview&%24filter=OfferDurableId+eq+'MS-AZR-0003P'+and+Currency+eq+'USD'+and+Locale+eq+'en-US'+and+RegionInfo+eq+'US'" -H "Authorization: Bearer ''' + btoken["access_token"]
 
-    def savejson(input, filename):
-        output = str(subprocess.check_output(input,stderr=subprocess.STDOUT, shell=True))
-        output = output[output.find("{"):]
-        output = output[:output.rfind("}")+1]
-        output = output.replace("\\r\\n", "")
-        output = output.replace(" ", "")
-        output = output.replace(",", ", ")
-        with open(filename+'.json', 'w') as outfile:
-            outfile.write(output)
-            outfile.close()
+    result = jsoncmd.json(apicall)
+    with open('RateCardOutput.json', 'w') as outfile:
+        outfile.write(result)
+        outfile.close()
+    print("RateCardOutput.json created")
 
-
-cred = open('my_credentials.json', 'r')
-act = open('accountinfo.json', 'r')
-
-cdata = json.load(cred)
-adata = json.load(act)
-
-clientId = cdata['clientId']
-clientSecret = cdata['clientSecret']
-tenantId = adata['tenantId']
-
-act.close()
-cred.close()
-
-command = "curl https://login.microsoftonline.com/"+tenantId+"/oauth2/token \
--F grant_type=client_credentials \
--F resource=https://management.core.windows.net/ \
--F client_id="+clientId+" \
--F client_secret="+clientSecret
-
-btoken = az.usejson(command)["access_token"]
-
-subid = adata["id"]
-
-apicall = '''curl -L "https://management.azure.com/subscriptions/''' + subid +'''/providers/Microsoft.Commerce/RateCard?api-version=2016-08-31-preview&%24filter=OfferDurableId+eq+'MS-AZR-0003P'+and+Currency+eq+'USD'+and+Locale+eq+'en-US'+and+RegionInfo+eq+'US'" -H "Authorization: Bearer '''+btoken
-
-az.savejson(apicall,"RateCardOutput")
+if __name__ == "__main__":
+    main()
