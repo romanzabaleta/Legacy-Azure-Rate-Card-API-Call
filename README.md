@@ -1,4 +1,4 @@
-# Azure-Ratecard-REST-API-Calls
+# Azure-Rate-Card-API-Call
 This program configures your Azure account to run rate card API calls and then runs the API call.
 
 # Dependecies
