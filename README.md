@@ -3,8 +3,8 @@ This program configures your Azure account to run rate card API calls. The progr
 
 # Dependecies
 The following dependecies are critical to running the program and cost free.
-1. [Python](https://www.python.org/downloads/)
-2. [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest)
+1. [Python](https://www.python.org/downloads/) installed
+2. [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) installed
 3. [Microsoft Azure Subscription](https://azure.microsoft.com/en-us/free/)
 
 # Step 1: Run InitialAZConfig.py
