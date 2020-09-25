@@ -1,3 +1,5 @@
+# This is now outdated. Please go to https://docs.microsoft.com/en-us/rest/api/cost-management/retail-prices/azure-retail-prices
+
 # Azure-Rate-Card-API-Call
 This program configures your Azure account to run rate card API calls. The program then runs a rate card API call and saves it as a JSON file.
 
